@@ -1,5 +1,17 @@
+import { DescuentoNormal } from './descuentos/descuentoNormal.js';
+import { DescuentoPremium } from './descuentos/descuentoPremium.js';
+import { DescuentoVip } from './descuentos/descuentoVip.js';
+
+import { EnvioNormal } from './envios/envioNormal.js';
+import { EnvioExpress } from './envios/envioExpress.js';
+
 export class PedidoService {
   constructor() {
+    this.descuentos = {
+      normal: new normal(),
+      premium: new premium(),
+      vip: new vip()
+    };
     this.pedidos = [];
   }
 
