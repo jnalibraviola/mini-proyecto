@@ -1,25 +1,30 @@
 import { DescuentoNormal } from '../descuentos/DescuentoNormal.js';
 import { DescuentoPremium } from '../descuentos/DescuentoPremium.js';
 import { DescuentoVip } from '../descuentos/DescuentoVip.js';
+import { DescuentoMayorista } from '../descuentos/DescuentoMayorista.js';
 
 import { EnvioNormal } from '../envios/EnvioNormal.js';
 import { EnvioExpress } from '../envios/EnvioExpress.js';
 import { EnvioLocal } from '../envios/EnvioLocal.js';
 
 export class PedidoService {
-  constructor() {
-    // 1. Usamos los nombres correctos que importamos
-    this.descuentos = {
+  // Recibimos las dependencias desde afuera de forma opcional
+  constructor(
+    estrategiasDescuento = {
       normal: new DescuentoNormal(),
       premium: new DescuentoPremium(),
-      vip: new DescuentoVip()
-    };
-
-    this.envios = {
+      vip: new DescuentoVip(),
+      mayorista: new DescuentoMayorista()
+    },
+    estrategiasEnvio = {
       normal: new EnvioNormal(),
       express: new EnvioExpress(),
-    };
-
+      local: new EnvioLocal()
+    }
+  ) {
+    // Asignamos las dependencias recibidas
+    this.descuentos = estrategiasDescuento;
+    this.envios = estrategiasEnvio;
     this.pedidos = [];
   }
 
@@ -30,21 +35,18 @@ export class PedidoService {
       total += producto.precio;
     }
 
-    // 2. Aplicamos el descuento usando la estrategia correspondiente (sin if/else)
     const estrategiaDescuento = this.descuentos[tipoCliente];
     if (estrategiaDescuento) {
-      total = estrategiaDescuento.calcular(total); // Asumiendo que tu clase tiene un método calcular()
+      total = estrategiaDescuento.calcular(total);
     }
 
-    // 3. Aplicamos el envío usando la estrategia correspondiente (sin if/else)
     const estrategiaEnvio = this.envios[tipoEnvio];
     if (estrategiaEnvio) {
-      total += estrategiaEnvio.obtenerCosto(); // Asumiendo que tu clase tiene un método obtenerCosto()
+      total += estrategiaEnvio.obtenerCosto();
     }
 
     this.pedidos.push({ pedido, total });
 
-    // Nota: localStorage no existe de forma nativa en Node.js (si corres tests, requerirá un mock)
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem("pedidos", JSON.stringify(this.pedidos));
     }

@@ -47,7 +47,6 @@ test("cliente premium recibe 10% de descuento sobre los productos", () => {
     const service = new PedidoService();
     
     // VIP: 10000 - 20% = 8000. Envío express: 2000. Total esperado: 10000.
-    // (Si el descuento afectara al envío, sería (10000 + 2000) * 0.8 = 9600)
     const total = service.registrar(pedido, "vip", "express");
     expect(total).toBe(10000);
   });
@@ -62,4 +61,16 @@ test("cliente premium recibe 10% de descuento sobre los productos", () => {
     // Premium: 50000 - 10% = 45000. Envío express: 2000. Total: 47000.
     const total = service.registrar(pedido, "premium", "express");
     expect(total).toBe(47000);
+  });
+
+  test("pedido mayorista con envio local", () => {
+    const pedido = new Pedido(
+      { nombre: "Ana", email: "ana@example.com" },
+      [new Producto(1, "Notebook", 100000)]
+    );
+    const service = new PedidoService();
+    
+    // Mayorista: 100000 - 5% = 95000. Envío local: 500. Total: 95500.
+    const total = service.registrar(pedido, "mayorista", "local");
+    expect(total).toBe(95500);
   });
