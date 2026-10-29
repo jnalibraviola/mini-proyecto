@@ -1,17 +1,25 @@
-import { DescuentoNormal } from './descuentos/descuentoNormal.js';
-import { DescuentoPremium } from './descuentos/descuentoPremium.js';
-import { DescuentoVip } from './descuentos/descuentoVip.js';
+import { DescuentoNormal } from '../descuentos/DescuentoNormal.js';
+import { DescuentoPremium } from '../descuentos/DescuentoPremium.js';
+import { DescuentoVip } from '../descuentos/DescuentoVip.js';
 
-import { EnvioNormal } from './envios/envioNormal.js';
-import { EnvioExpress } from './envios/envioExpress.js';
+import { EnvioNormal } from '../envios/EnvioNormal.js';
+import { EnvioExpress } from '../envios/EnvioExpress.js';
+import { EnvioLocal } from '../envios/EnvioLocal.js';
 
 export class PedidoService {
   constructor() {
+    // 1. Usamos los nombres correctos que importamos
     this.descuentos = {
-      normal: new normal(),
-      premium: new premium(),
-      vip: new vip()
+      normal: new DescuentoNormal(),
+      premium: new DescuentoPremium(),
+      vip: new DescuentoVip()
     };
+
+    this.envios = {
+      normal: new EnvioNormal(),
+      express: new EnvioExpress(),
+    };
+
     this.pedidos = [];
   }
 
@@ -22,28 +30,25 @@ export class PedidoService {
       total += producto.precio;
     }
 
-    if (tipoCliente === "premium") {
-      total *= 0.9;
+    // 2. Aplicamos el descuento usando la estrategia correspondiente (sin if/else)
+    const estrategiaDescuento = this.descuentos[tipoCliente];
+    if (estrategiaDescuento) {
+      total = estrategiaDescuento.calcular(total); // Asumiendo que tu clase tiene un método calcular()
     }
 
-    if (tipoCliente === "vip") {
-      total *= 0.8;
+    // 3. Aplicamos el envío usando la estrategia correspondiente (sin if/else)
+    const estrategiaEnvio = this.envios[tipoEnvio];
+    if (estrategiaEnvio) {
+      total += estrategiaEnvio.obtenerCosto(); // Asumiendo que tu clase tiene un método obtenerCosto()
     }
 
-    let costoEnvio = 0;
-
-    if (tipoEnvio === "normal") {
-      costoEnvio = 1000;
-    }
-
-    if (tipoEnvio === "express") {
-      costoEnvio = 2000;
-    }
-
-    total += costoEnvio;
     this.pedidos.push({ pedido, total });
 
-    localStorage.setItem("pedidos", JSON.stringify(this.pedidos));
+    // Nota: localStorage no existe de forma nativa en Node.js (si corres tests, requerirá un mock)
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem("pedidos", JSON.stringify(this.pedidos));
+    }
+    
     console.log(`Email enviado a ${pedido.cliente.email}`);
 
     return total;

@@ -1,5 +1,5 @@
-export class normal {
-    descuentonormal () {
+export class DescuentoNormal {
+    calcular(total) {
         return total;
     }
-}
+} 

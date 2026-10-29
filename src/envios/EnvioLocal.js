@@ -1,5 +1,5 @@
-export class enviolocal {
-    costodeenvido (){
-        costodeenvido = 500;
+export class EnvioLocal {
+    obtenerCosto (){
+        return 500;
     }
 }

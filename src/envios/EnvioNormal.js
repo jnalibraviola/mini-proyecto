@@ -1,5 +1,5 @@
-export class envionormal {
-    costodeenvio () {
-        costoenvio = 1000;
+export class EnvioNormal {
+    obtenerCosto () {
+        return 1000;
     }
 }

@@ -1,5 +1,5 @@
-export class envioexpress {
-    costodeenvio () {
-        costoenvio = 2000;
+export class EnvioExpress {
+    obtenerCosto () {
+        return 2000;
     }
 }
